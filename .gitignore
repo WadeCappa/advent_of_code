@@ -2,3 +2,4 @@
 **/toy.txt
 **/.vscode
 **/*.beam
+**/__pycache__
