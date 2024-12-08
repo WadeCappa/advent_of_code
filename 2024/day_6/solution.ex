@@ -64,7 +64,7 @@ defmodule Day6 do
       |> Enum.reduce(%{}, fn line, acc -> Map.merge(line, acc) end)
   end
 
-  def run(file) do
+  def run(file, batchSize) do
     map = case File.read(file) do
       {:ok, contents} -> asMap(contents)
     end
@@ -74,8 +74,13 @@ defmodule Day6 do
     IO.puts Kernel.map_size(path)
 
     Map.keys(path)
-      |> Task.async_stream(fn p -> checkIfLoop(Map.replace(map, p, "#"), %{}, start, {-1, 0}) end)
-      |> Enum.filter(fn {:ok, v} -> v end)
-      |> then(fn validCoords -> length(validCoords) end)
+      |> Enum.chunk_every(batchSize)
+      |> Task.async_stream(fn points ->
+        points
+        |> Enum.filter(fn p -> checkIfLoop(Map.replace(map, p, "#"), %{}, start, {-1, 0}) end)
+        |> Enum.filter(fn v -> v end)
+        |> then(fn validCoords -> length(validCoords) end)
+      end)
+      |> Enum.reduce(0, fn {:ok, t}, acc -> t + acc end)
   end
 end
