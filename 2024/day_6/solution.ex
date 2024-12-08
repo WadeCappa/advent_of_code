@@ -37,7 +37,7 @@ defmodule Day6 do
   def getPath(map, path, p, d) do
     case takeStep(map, p, d) do
       :done -> path
-      {p, d} -> getPath(map, MapSet.put(path, p), p, d)
+      {p, d} -> getPath(map, Map.put(path, p, 0), p, d)
     end
   end
 
@@ -70,11 +70,12 @@ defmodule Day6 do
     end
 
     start = getStart(map)
-    path = getPath(map, MapSet.new([start]), start, {-1, 0})
-    IO.puts MapSet.size(path)
+    path = getPath(map, %{start => 0}, start, {-1, 0})
+    IO.puts Kernel.map_size(path)
 
-    path
-      |> MapSet.filter(fn p -> checkIfLoop(Map.replace(map, p, "#"), %{}, start, {-1, 0}) end)
-      |> MapSet.size()
+    Map.keys(path)
+      |> Task.async_stream(fn p -> checkIfLoop(Map.replace(map, p, "#"), %{}, start, {-1, 0}) end)
+      |> Enum.filter(fn {:ok, v} -> v end)
+      |> then(fn validCoords -> length(validCoords) end)
   end
 end
