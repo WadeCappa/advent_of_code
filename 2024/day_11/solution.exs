@@ -1,4 +1,8 @@
 defmodule Day11 do
+  def initMemoTable do
+    :ets.new(:blink_table, [:named_table, :set, :public])
+  end
+
   def readStones(file) do
     case File.read(file) do
       {:ok, stones} -> stones
@@ -25,12 +29,20 @@ defmodule Day11 do
   end
 
   def dfs(stone, its) do
-    if its == 0 do
-      1
-    else
-      blink(stone)
-        |> Enum.map(fn s -> dfs(s, its - 1) end)
-        |> Enum.reduce(fn stones, acc -> stones + acc end)
+    key = {stone, its}
+    case :ets.lookup(:blink_table, key) do
+      [{^key, result}] -> result
+      [] ->
+        result = if its == 0 do
+          1
+        else
+          blink(stone)
+            |> Enum.map(fn s -> dfs(s, its - 1) end)
+            |> Enum.reduce(fn stones, acc -> stones + acc end)
+        end
+
+        :ets.insert(:blink_table, {key, result})
+        result
     end
   end
 
@@ -48,4 +60,5 @@ IO.puts its
 
 stones = Day11.readStones(file)
 
+Day11.initMemoTable()
 Day11.countStonesAfterBlinks(stones, its) |> IO.inspect()
