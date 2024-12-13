@@ -1,6 +1,6 @@
 defmodule Day11 do
   def initMemoTable do
-    :ets.new(:blink_table, [:named_table, :set, :public])
+    :ets.new(:blink_table, [:named_table, :set, :private])
   end
 
   def readStones(file) do
