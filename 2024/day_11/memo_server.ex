@@ -15,7 +15,7 @@ defmodule MemoServer do
   end
 
   @impl true
-  def handle_call({:put, k, v}, _from, state) do
-    {:reply, :ok, Map.put(state, k, v)}
+  def handle_cast({:put, k, v}, state) do
+    {:noreply, Map.put(state, k, v)}
   end
 end
