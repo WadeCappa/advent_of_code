@@ -10,5 +10,6 @@ stones = Day11.readStones(file)
 getter = fn key -> GenServer.call(pid, {:get, key}) end
 setter = fn key, value -> GenServer.call(pid, {:put, key, value}) end
 
-Day11.countStonesAfterBlinks(stones, its, getter, setter)
-  |> IO.inspect()
+{timeInMicros, res} = :timer.tc fn -> Day11.countStonesAfterBlinks(stones, its, getter, setter) end
+IO.inspect(timeInMicros / 1_000_000)
+IO.inspect(res)
