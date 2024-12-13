@@ -24,27 +24,27 @@ defmodule Day11 do
     end
   end
 
-  def dfs(stone, its, getter, setter) do
+  def dfs(stone, its, getMemo, setMemo) do
     key = {stone, its}
-    case getter.(key) do
+    case getMemo.(key) do
       :miss ->
         result = if its == 0 do
           1
         else
           blink(stone)
-            |> Enum.map(fn s -> dfs(s, its - 1, getter, setter) end)
+            |> Enum.map(fn s -> dfs(s, its - 1, getMemo, setMemo) end)
             |> Enum.reduce(fn stones, acc -> stones + acc end)
         end
 
-        setter.(key, result)
+        setMemo.(key, result)
         result
       result -> result
     end
   end
 
-  def countStonesAfterBlinks(stones, its, getter, setter) do
+  def countStonesAfterBlinks(stones, its, getMemo, setMemo) do
     stones
-      |> Enum.map(fn s -> dfs(s, its, getter, setter) end)
+      |> Enum.map(fn s -> dfs(s, its, getMemo, setMemo) end)
       |> Enum.reduce(fn stones, acc -> stones + acc end)
   end
 end
