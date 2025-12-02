@@ -1,5 +1,5 @@
-**/input.txt
-**/toy.txt
+**/input*
+**/toy*
 **/.vscode
 **/*.beam
 **/__pycache__
