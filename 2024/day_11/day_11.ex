@@ -4,7 +4,7 @@ defmodule Day11 do
       {:ok, stones} -> stones
         |> String.trim()
         |> String.split(" ")
-        |> Enum.map(fn x -> String.to_integer(x) end)
+        |> Enum.map(&String.to_integer/1)
     end
   end
 
@@ -17,7 +17,7 @@ defmodule Day11 do
       if rem(l, 2) == 0 do
         m = div(String.length(s), 2)
         [String.slice(s, 0..m-1), String.slice(s, m..l)]
-          |> Enum.map(fn x -> String.to_integer(x) end)
+          |> Enum.map(&String.to_integer/1)
       else
         [stone * 2024]
       end
@@ -26,14 +26,14 @@ defmodule Day11 do
 
   def dfs(stone, its, getMemo, setMemo) do
     key = {stone, its}
-    case getMemo.(key) do
+    case getMemo.(key, :miss) do
       :miss ->
         result = if its == 0 do
           1
         else
           blink(stone)
             |> Enum.map(fn s -> dfs(s, its - 1, getMemo, setMemo) end)
-            |> Enum.reduce(fn stones, acc -> stones + acc end)
+            |> Enum.sum()
         end
 
         setMemo.(key, result)
@@ -45,6 +45,6 @@ defmodule Day11 do
   def countStonesAfterBlinks(stones, its, getMemo, setMemo) do
     stones
       |> Enum.map(fn s -> dfs(s, its, getMemo, setMemo) end)
-      |> Enum.reduce(fn stones, acc -> stones + acc end)
+      |> Enum.sum()
   end
 end

@@ -3,10 +3,10 @@ defmodule MemoTable do
     :ets.new(:memo_table, [:named_table, :set, :private])
   end
 
-  def fetch(key) do
+  def fetch(key, default) do
     case :ets.lookup(:memo_table, key) do
       [{^key, result}] -> result
-      [] -> :miss
+      [] -> default
     end
   end
 

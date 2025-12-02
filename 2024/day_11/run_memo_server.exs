@@ -7,7 +7,7 @@ IO.puts its
 stones = Day11.readStones(file)
 
 {:ok, pid} = GenServer.start_link(MemoServer, %{})
-getter = fn key -> GenServer.call(pid, {:get, key}) end
+getter = fn key, default -> GenServer.call(pid, {:get, key, default}) end
 setter = fn key, value -> GenServer.cast(pid, {:put, key, value}) end
 
 {timeInMicros, res} = :timer.tc fn -> Day11.countStonesAfterBlinks(stones, its, getter, setter) end

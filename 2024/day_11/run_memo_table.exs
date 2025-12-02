@@ -7,8 +7,8 @@ IO.puts its
 stones = Day11.readStones(file)
 
 MemoTable.initMemoTable()
-getter = fn key -> MemoTable.fetch(key) end
-setter = fn key, value -> MemoTable.set(key, value) end
+getter = &MemoTable.fetch/2
+setter = &MemoTable.set/2
 
 {timeInMicros, res} = :timer.tc fn -> Day11.countStonesAfterBlinks(stones, its, getter, setter) end
 IO.inspect(timeInMicros / 1_000_000)
